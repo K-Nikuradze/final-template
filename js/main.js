@@ -2,7 +2,7 @@ import { fetchData, getSaved, setSaved } from './api.js';
 
 // თუ მომხმარებელი არ არის ავტორიზებული — გადამისამართება login.html-ზე
 if (!localStorage.getItem('user')) {
-  window.location.href = 'login.html';
+  window.location.href = 'index.html';
 }
 
 document.getElementById('nav-user').textContent = localStorage.getItem('user') || '';
