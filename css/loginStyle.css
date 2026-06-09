@@ -22,8 +22,8 @@
 }
 
 .login-main {
-  height: 100vh; /* ფიქსირებული 100vh min-height-ის ნაცვლად */
-  overflow: hidden; /* ბლოკავს ნებისმიერ სქროლს */
+  height: 100vh;
+  overflow: hidden;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -31,7 +31,6 @@
   background-color: var(--light-bg);
 }
 
-/* ლოგინის თეთრი ბარათი */
 .login-card {
   background-color: var(--white);
   padding: 2.5rem;
@@ -43,7 +42,6 @@
   text-align: center;
 }
 
-/* ბარათის ზედა ნაწილი (ლოგო და სათაური) */
 .login-header {
   margin-bottom: 2rem;
 }
@@ -70,7 +68,6 @@
   font-size: 0.9rem;
 }
 
-/* ინპუტის კონტეინერი */
 .form-group {
   display: flex;
   flex-direction: column;
@@ -85,7 +82,6 @@
   color: var(--burgundy-main);
 }
 
-/* თავად ინპუტის სტილი */
 .form-group input {
   padding: 0.75rem 1rem;
   font-size: 1rem;
@@ -98,13 +94,10 @@
   transition: border-color var(--transition-speed), box-shadow var(--transition-speed);
 }
 
-/* ინპუტზე დაწკაპუნებისას (Focus) */
 .form-group input:focus {
   border-color: var(--primary-color);
   box-shadow: 0 0 0 3px rgba(255, 102, 0, 0.2); 
 }
-
-/* შეცდომის ტექსტი */
 .error-text {
   color: var(--white);
   font-size: 0.85rem;
@@ -116,7 +109,6 @@
   border-left: 4px solid var(--primary-color);
 }
 
-/* გაგზავნის ღილაკი */
 .btn-submit {
   width: 100%;
   padding: 0.75rem;
@@ -138,11 +130,13 @@
   transform: scale(0.98);
 }
 
-/* ბარათის ქვედა ნაწილი (უკან დაბრუნების ლინკი) */
 .login-footer {
   margin-top: 1.5rem;
   padding-top: 1rem;
   border-top: 1px solid var(--light-bg);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
 .back-link {
@@ -158,11 +152,9 @@
   opacity: 1;
 }
 
-/* ===== რესპონსიული მოდიფიკაციები ლოგინისთვის ===== */
-
 @media (max-width: 480px) {
   .login-main {
-    overflow-y: auto; /* მობილურზე თუ კლავიატურა ამოიწევა, მომხმარებელმა სქროლვა რომ შეძლოს და კონტენტი არ დაიმალოს */
+    overflow-y: auto;
   }
   .login-card {
     padding: 1.5rem;
@@ -175,12 +167,11 @@
 @media (min-width: 1024px) {
   /* დესქტოპი */
   .login-card {
-    padding: 3.5rem; /* დიდ ეკრანებზე ბარათს შიგნით მეტ "ჰაერს" ვაძლევთ */
-    max-width: 460px; /* ოდნავ ვზრდით მაქსიმალურ სიგანეს უკეთესი ვიზუალისთვის */
+    padding: 3.5rem;
+    max-width: 460px;
     transition: transform var(--transition-speed);
   }
   
-  /* პატარა პრემიუმ ეფექტი დესქტოპისთვის */
   .login-card:hover {
     transform: translateY(-5px);
   }

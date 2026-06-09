@@ -82,16 +82,15 @@ body {
   font-size: 0.95rem;
   font-weight: 500;
   border-radius: var(--border-radius);
-  text-decoration: none; /* აქრობს ლინკის ნაგულისხმევ ხაზგასმას */
+  text-decoration: none; 
   cursor: pointer;
   transition: background-color var(--transition-speed), transform 0.1s;
 }
 
 .btn-signin:hover {
-  background-color: var(--primary-hover); /* მუქი ნარინჯისფერი ჰოვერზე */
+  background-color: var(--primary-hover); 
 }
 
-/* პატარა ეფექტი დაწკაპუნებისას (click) */
 .btn-signin:active {
   transform: scale(0.95);
 }
