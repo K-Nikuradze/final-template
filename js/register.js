@@ -1,17 +1,15 @@
-import { CustomerAuth } from './api.js';
-
-if (localStorage.getItem('user')) {
-  window.location.href = 'index.html';
-}
+import { CustomerRegister } from './api.js';
 
 document.getElementById('login-form').addEventListener('submit', async (e) => {
 
   e.preventDefault();
 
   const nameInput = document.getElementById('name-input');
+  const emailInput = document.getElementById('email-input');
   const passwordInput = document.getElementById('password-input'); 
   
-  const nameValue = nameInput.value.trim();
+  const nameValue = nameInput ? nameInput.value.trim() : '';
+  const emailValue = emailInput ? emailInput.value.trim() : '';
   const passwordValue = passwordInput ? passwordInput.value.trim() : '';
   
   const errorEl = document.getElementById('login-error');
@@ -20,6 +18,12 @@ document.getElementById('login-form').addEventListener('submit', async (e) => {
   if (!nameValue) {
     showFeedback('გთხოვთ შეიყვანოთ სახელი.', 'error');
     nameInput.focus();
+    return;
+  }
+
+  if (!emailValue) {
+    showFeedback('გთხოვთ შეიყვანოთ მეილი.', 'error');
+    emailInput.focus();
     return;
   }
 
@@ -33,34 +37,29 @@ document.getElementById('login-form').addEventListener('submit', async (e) => {
 
   try {
     submitBtn.disabled = true;
-    submitBtn.textContent = 'მიმდინარეობს ავტორიზაცია...';
+    submitBtn.textContent = 'მიმდინარეობს რეგისტრაცია...';
 
-    const loginData = {
+    const registrationData = {
       username: nameValue,
-      password: passwordValue 
+      email: emailValue,
+      password: passwordValue
     };
 
-    const response = await CustomerAuth(loginData);
+    const response = await CustomerRegister(registrationData);
 
     if (!response.ok) {
-      if (response.status === 401 || response.status === 400) {
-        throw new Error('სახელი ან პაროლი არასწორია.');
+      if (response.status === 400) {
+        throw new Error('მონაცემები არასწორადაა მითითებული');
       }
       throw new Error('სერვერზე დაფიქსირდა შეცდომა.');
     }
 
     const customerData = await response.json();
 
-    showFeedback('ავტორიზაცია წარმატებულია! გადამისამართება...', 'success');
-    
-    localStorage.setItem('user', customerData.name);
-    localStorage.setItem('userId', customerData.id);
-    localStorage.setItem('userEmail', customerData.email);
-    
-    document.cookie = 'authorized=true; path=/';
+    showFeedback('რეგისტრაცია წარმატებულია! გადამისამართება...', 'success');
 
     setTimeout(() => {
-      window.location.href = 'index.html';
+      window.location.href = 'login.html';
     }, 1200);
 
   } catch (error) {
