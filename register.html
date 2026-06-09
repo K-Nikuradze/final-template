@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ka">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>შესვლა — KN Industry Store</title>
+  <link rel="stylesheet" href="css/loginStyle.css">
+</head>
+<body>
+
+  <main class="login-main">
+    <section class="login-card">
+      
+      <div class="login-header">
+        <a href="index.html" class="login-logo">KN Industry Store</a>
+        <h2>რეგისტრაცია</h2>
+        <p>გთხოვთ, შეიყვანოთ თქვენი მონაცემები</p>
+      </div>
+
+      <form id="login-form">
+        
+        <div class="form-group">
+          <label for="name-input">მომხმარებლის სახელი</label>
+          <input 
+            id="name-input" 
+            type="text" 
+            name="name" 
+            required 
+            minlength="2" 
+            autocomplete="username" 
+            placeholder="შეიყვანეთ სახელი"
+          >
+        </div>
+
+        <div class="form-group">
+          <label for="email-input">მომხმარებლის მეილი</label>
+          <input 
+            id="email-input" 
+            type="email" 
+            name="email" 
+            required 
+            minlength="2" 
+            autocomplete="email" 
+            placeholder="შეიყვანეთ მეილი"
+          >
+        </div>
+
+        <div class="form-group">
+          <label for="password-input">მომხმარებლის პაროლი</label>
+          <input 
+            id="password-input" 
+            type="password" 
+            name="password" 
+            required 
+            minlength="8" 
+            autocomplete="password" 
+            placeholder="შეიყვანეთ პაროლი"
+          >
+        </div>
+
+        <p id="login-error" class="error-text" hidden></p>
+
+        <button type="submit" class="btn-submit">რეგისტრაცია</button>
+      </form>
+
+      <div class="login-footer">
+        <a href="login.html" class="back-link">← ანგარიშში შესვლაზე დაბრუნება</a>
+      </div>
+
+    </section>
+  </main>
+
+  <script type="module" src="js/login.js"></script>
+</body>
+</html>
