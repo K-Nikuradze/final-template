@@ -1,7 +1,7 @@
 // უკვე ავტორიზებული მომხმარებელი — მთავარ გვერდზე გადამისამართება
-if (localStorage.getItem('user')) {
-  window.location.href = 'index.html';
-}
+//if (localStorage.getItem('user')) {
+  //window.location.href = 'index.html';
+//}
 
 document.getElementById('login-form').addEventListener('submit', (e) => {
   e.preventDefault();

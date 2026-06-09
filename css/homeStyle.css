@@ -71,6 +71,31 @@ body {
   color: var(--primary-color);
 }
 
+.btn-signin {
+  display: inline-block;
+  text-align: center;
+  background-color: var(--primary-color);
+  color: var(--white);
+  border: none;
+  padding: 0.5rem 1.2rem;
+  font-family: inherit;
+  font-size: 0.95rem;
+  font-weight: 500;
+  border-radius: var(--border-radius);
+  text-decoration: none; /* აქრობს ლინკის ნაგულისხმევ ხაზგასმას */
+  cursor: pointer;
+  transition: background-color var(--transition-speed), transform 0.1s;
+}
+
+.btn-signin:hover {
+  background-color: var(--primary-hover); /* მუქი ნარინჯისფერი ჰოვერზე */
+}
+
+/* პატარა ეფექტი დაწკაპუნებისას (click) */
+.btn-signin:active {
+  transform: scale(0.95);
+}
+
 /* 3. Main Section */
 .hero-content {
   flex: 1;
