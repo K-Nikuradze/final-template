@@ -23,10 +23,10 @@
 
 
 body {
-  font-family: sans-serif; 
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  line-height: 1.6;
   color: var(--text-color);
   background-color: var(--light-bg);
-  line-height: 1.6;
 }
 
 .main-header {
@@ -352,7 +352,6 @@ main{
   background-color: var(--primary-color);
 }
 
-/* სერჩ ბარის კონტეინერი */
 .search-container {
   display: flex;
   gap: 0.5rem;
@@ -360,7 +359,6 @@ main{
   width: 100%;
 }
 
-/* ძებნის ინპუტი */
 .search-container input {
   flex: 1;
   padding: 0.75rem 1rem;
@@ -510,7 +508,6 @@ main{
   .navbar {
     margin: 0;
     width: 100%;
-    padding: 2rem calc((100% - 1200px) / 2 + var(--container-padding)); 
   }
 
   .catalog-hero h1 {
