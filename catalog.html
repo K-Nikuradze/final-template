@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>KN Industry</title>
   <link rel="stylesheet" href="css/catalogStyle.css">
+  <link rel="stylesheet" href="css/cartStyle.css">
 </head>
 <body>
 
@@ -18,6 +19,11 @@
         <li><a href="catalog.html">კატალოგი</a></li>
         <li><a href="about.html">ჩვენ შესახებ</a></li>
         <li><a href="contact.html">კონტაქტი</a></li>
+        <li>
+          <button id="cart-toggle-btn" class="cart-icon-btn">
+            🛒 <span id="cart-badge" class="cart-badge">0</span>
+          </button>
+        </li>
         <li><a href="login.html" class="btn-signin">შესვლა</a></li>
       </ul>
 
@@ -89,7 +95,31 @@
       2026 KN Industry. ყველა უფლება დაცულია.
     </div>
   </footer>
+
+  <div id="cart-drawer" class="cart-drawer">
+    <div class="cart-drawer-header">
+      <h2>შენი კალათა</h2>
+      <button id="cart-close-btn" class="cart-close-btn">&times;</button>
+    </div>
+
+    <div id="cart-items-container" class="cart-items-container">
+      <p class="empty-cart-text">კალათა ცარიელია</p>
+    </div>
+
+    <div class="cart-drawer-footer">
+      <div class="cart-total-section">
+        <span>სულ ჯამი:</span>
+        <span id="cart-total-price">0.00 ₾</span>
+      </div>
+      <button id="clear-cart-btn" class="btn-clear-cart">კალათის გასუფთავება 🗑️</button>
+      <button class="btn-checkout">შეკვეთის გაფორმება</button>
+    </div>
+  </div>
+
+  <div id="cart-overlay" class="cart-overlay"></div>
+
   <script type="module" src="js/catalog.js"></script>
+  <script type="module" src="js/cart.js"></script>
 
 </body>
 </html>

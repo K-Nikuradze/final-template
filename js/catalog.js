@@ -7,6 +7,12 @@ const catalogStatus = document.getElementById('catalog-status');
 const searchInput = document.getElementById('search-input');
 const searchBtn = document.getElementById('search-btn');
 
+const isAuthorized = document.cookie.split('; ').some(row => row.startsWith('authorized=true'));
+
+if (!isAuthorized) {
+  window.location.href = 'login.html';
+}
+
 async function initCatalog() {
   try {
     showLoader();
