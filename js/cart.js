@@ -1,5 +1,5 @@
 import { 
-  getCart, addToCart, removeFromCart, 
+  getCart, addToCart, removeFromCart, createOrder,
   increaseQuantity, decreaseQuantity, clearCart, getCartTotal 
 } from './api.js';
 
@@ -15,6 +15,7 @@ const cartTotalPrice = document.getElementById('cart-total-price');
 const cartBadge = document.getElementById('cart-badge');
 const clearCartBtn = document.getElementById('clear-cart-btn');
 const productsGrid = document.getElementById('products-grid');
+const checkoutBtn = document.getElementById('checkout-btn');
 
 function openCart() {
   cartDrawer.classList.add('open');
@@ -149,6 +150,16 @@ clearCartBtn.addEventListener('click', async () => {
   try {
     await clearCart(CURRENT_CUSTOMER_ID);
     updateCartUI();
+  } catch (error) {
+    alert('კალათის გასუფთავება ვერ მოხერხდა.');
+  }
+});
+
+checkoutBtn.addEventListener('click', async () => {
+  if (!confirm('ნამდვილად გსურთ შეკვეთის გაკეთება?')) return;
+  try {
+    await createOrder(CURRENT_CUSTOMER_ID);
+    window.location.href = 'profile.html';
   } catch (error) {
     alert('კალათის გასუფთავება ვერ მოხერხდა.');
   }

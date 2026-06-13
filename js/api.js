@@ -1,6 +1,7 @@
 const CATALOG_URL = 'https://catalog-kn-industry-webstore.duckdns.org/api';
 const USER_URL = 'http://user-kn-industry-webstore.duckdns.org/api';
 const CART_URL = 'http://cart-kn-industry-webstore.duckdns.org';
+const ORDER_URL = 'http://order-kn-industry-webstore.duckdns.org';
 
 // localStorage-ის დამხმარე ფუნქციები — იმპორტი გაარ სადაც ჩანაწერები გჭირდება
 export function getSaved() {
@@ -90,6 +91,44 @@ export async function CustomerRegister(registrationData) {
       body: JSON.stringify(registrationData)
     });
     return response;
+}
+
+export async function changeUsername(customerId, newUsername) {
+  try {
+    const response = await fetch(`${USER_URL}/Customers/Customer-ChangeUsername/${customerId}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify(newUsername)
+    });
+    if (!response.ok) throw new Error('იუზერნეიმის შეცვლა ვერ მოხერხდა');
+    const responseText = await response.text();
+    return responseText ? JSON.parse(responseText) : true;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
+
+export async function changePassword(customerId, oldPassword, newPassword) {
+  try {
+    const response = await fetch(`${USER_URL}/Customers/Customer-ChangePassword/${customerId}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify({ oldPassword, newPassword })
+    });
+    if (!response.ok) throw new Error('პაროლის შეცვლა ვერ მოხერხდა. შეამოწმეთ ძველი პაროლი');
+    const responseText = await response.text();
+    return responseText ? JSON.parse(responseText) : true;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
 }
 
 //CART
@@ -196,4 +235,49 @@ export async function clearCart(customerId) {
 
 export async function getCartTotal(customerId) {
   return await fetchDataCart(`/api/Carts/Get-Total/${customerId}`);
+}
+
+//ORDERS
+export async function createOrder(customerId) {
+  try {
+    const response = await fetch(`${ORDER_URL}/api/Orders/Create-Order/${customerId}`, {
+      method: 'POST',
+      headers: { 'Accept': 'application/json' }
+    });
+    if (!response.ok) throw new Error('შეკვეთის გაფორმება ვერ მოხერხდა');
+    const responseText = await response.text();
+    return responseText ? JSON.parse(responseText) : true;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
+
+export async function getOrders(customerId) {
+  try {
+    const response = await fetch(`${ORDER_URL}/api/Orders/Get-Orders/${customerId}`, {
+      method: 'GET',
+      headers: { 'Accept': 'application/json' }
+    });
+    if (!response.ok) throw new Error('შეკვეთების წამოღება ვერ მოხერხდა');
+    return await response.json();
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
+
+export async function cancelOrder(customerId, orderId) {
+  try {
+    const response = await fetch(`${ORDER_URL}/api/Orders/Cancel-Order/${customerId}/${orderId}`, {
+      method: 'POST',
+      headers: { 'Accept': 'application/json' }
+    });
+    if (!response.ok) throw new Error('შეკვეთის გაუქმება ვერ მოხერხდა');
+    const responseText = await response.text();
+    return responseText ? JSON.parse(responseText) : true;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
 }
