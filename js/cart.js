@@ -18,6 +18,8 @@ export function initCartPage() {
 
   if (!cartItemsContainer) return;
 
+  let cartItems = [];
+
   updateCartUI();
 
   function openCart() {
@@ -42,18 +44,20 @@ export function initCartPage() {
         getCartTotal(GLOBAL.CURRENT_CUSTOMER_ID)
       ]);
 
+      cartItems = cart.items || [];
+
       cartItemsContainer.innerHTML = '';
       
-      const totalItemsCount = cart.items ? cart.items.reduce((sum, item) => sum + item.quantity, 0) : 0;
+      const totalItemsCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
       cartBadge.innerText = totalItemsCount;
 
-      if (!cart.items || cart.items.length === 0) {
+      if (!cartItems || cartItems.length === 0) {
         cartItemsContainer.innerHTML = '<p class="empty-cart-text">კალათა ცარიელია</p>';
         cartTotalPrice.innerText = '0.00 ₾';
         return;
       }
 
-      cart.items.forEach(item => {
+      cartItems.forEach(item => {
           const productInfo = item.product || {};
           const productName = productInfo.name || 'უსახელო პროდუქტი';
           const productPrice = typeof productInfo.price === 'number' ? productInfo.price : 0;

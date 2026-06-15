@@ -8,6 +8,7 @@ export async function initCatalogPage() {
   const searchInput = document.getElementById('search-input');
   const searchBtn = document.getElementById('search-btn');
   const signingBtn = document.getElementById('log-in-out');
+  let currentProducts = [];
 
   if (!GLOBAL.isAuthorized) {
     window.location.href = 'login.html';
@@ -21,9 +22,11 @@ export async function initCatalogPage() {
       getAllProducts()
     ]);
 
+    currentProducts = products;
+
     renderCategories(categories);
 
-    renderProducts(products);
+    renderProducts(currentProducts);
 
     hideStatus();
 
@@ -52,7 +55,8 @@ export async function initCatalogPage() {
       try {
         showLoader();
         const products = await getAllProducts();
-        renderProducts(products);
+        currentProducts = products;
+        renderProducts(currentProducts);
         hideStatus();
         
         document.querySelectorAll('.category-btn').forEach(btn => btn.classList.remove('active'));
@@ -68,8 +72,8 @@ export async function initCatalogPage() {
       productsGrid.innerHTML = '';
 
       const filteredProducts = await searchProducts(name);
-      
-      renderProducts(filteredProducts);
+      currentProducts = filteredProducts;
+      renderProducts(currentProducts);
       
       if (filteredProducts.length > 0) {
         hideStatus();
@@ -183,8 +187,8 @@ export async function initCatalogPage() {
         } else {
           products = await getProductsByCategory(categoryId);
         }
-
-        renderProducts(products);
+        currentProducts = products;
+        renderProducts(currentProducts);
         hideStatus();
 
       } catch (error) {
