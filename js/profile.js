@@ -2,8 +2,6 @@ import { getOrders, cancelOrder, changeUsername, changePassword } from './api.js
 import * as GLOBAL from './config.js';
 
 export async function initProfilePage() {
-  const CURRENT_CUSTOMER_ID = localStorage.getItem('userId');
-
   const usernameInput = document.getElementById('profile-username');
   const emailInput = document.getElementById('profile-email');
   const passwordInput = document.getElementById('profile-password');
@@ -45,7 +43,7 @@ export async function initProfilePage() {
         let isPasswordChanged = false;
 
         if (newUsername !== currentUsername) {
-          await changeUsername(CURRENT_CUSTOMER_ID, newUsername);
+          await changeUsername(GLOBAL.CURRENT_CUSTOMER_ID, newUsername);
           localStorage.setItem('user', newUsername);
           isUsernameChanged = true;
         }
@@ -56,7 +54,7 @@ export async function initProfilePage() {
             return;
           }
           
-          await changePassword(CURRENT_CUSTOMER_ID, oldPassword, newPassword);
+          await changePassword(GLOBAL.CURRENT_CUSTOMER_ID, oldPassword, newPassword);
           oldPasswordInput.value = '';
           passwordInput.value = '';
           isPasswordChanged = true;
@@ -80,7 +78,7 @@ export async function initProfilePage() {
   dataUpdateBtn.addEventListener('click', handleDataUpdate);
 
   try {
-    const orders = await getOrders(CURRENT_CUSTOMER_ID);
+    const orders = await getOrders(GLOBAL.CURRENT_CUSTOMER_ID);
     ordersListContainer.innerHTML = '';
 
     if (!orders || orders.length === 0) {
@@ -130,7 +128,7 @@ export async function initProfilePage() {
     try {
       e.target.disabled = true;
       e.target.innerText = 'უქმდება...';
-      await cancelOrder(CURRENT_CUSTOMER_ID, orderId);
+      await cancelOrder(GLOBAL.CURRENT_CUSTOMER_ID, orderId);
       await loadOrders();
     } catch (error) {
       alert('შეკვეთის გაუქმება ვერ მოხერხდა.');

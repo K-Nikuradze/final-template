@@ -2,11 +2,9 @@ import {
   getCart, addToCart, removeFromCart, createOrder,
   increaseQuantity, decreaseQuantity, clearCart, getCartTotal 
 } from './api.js';
+import * as GLOBAL from './config.js';
 
 export function initCartPage() {
-  const CURRENT_CUSTOMER_ID = localStorage.getItem('userId');
-  const R2_URL = 'https://pub-c966a90ea96443f98cb7bede2669eb6f.r2.dev/';
-
   const cartDrawer = document.getElementById('cart-drawer');
   const cartOverlay = document.getElementById('cart-overlay');
   const cartToggleBtn = document.getElementById('cart-toggle-btn');
@@ -40,8 +38,8 @@ export function initCartPage() {
   async function updateCartUI() {
     try {
       const [cart, totalData] = await Promise.all([
-        getCart(CURRENT_CUSTOMER_ID),
-        getCartTotal(CURRENT_CUSTOMER_ID)
+        getCart(GLOBAL.CURRENT_CUSTOMER_ID),
+        getCartTotal(GLOBAL.CURRENT_CUSTOMER_ID)
       ]);
 
       cartItemsContainer.innerHTML = '';
@@ -61,7 +59,7 @@ export function initCartPage() {
           const productPrice = typeof productInfo.price === 'number' ? productInfo.price : 0;
           
           const imgPath = productInfo.imagePath 
-              ? `${R2_URL}${productInfo.imagePath.replace(/^\//, '')}` 
+              ? `${GLOBAL.R2_BASE_Path}${productInfo.imagePath.replace(/^\//, '')}` 
               : 'https://via.placeholder.com/60';
           
           const itemRow = document.createElement('div');
@@ -101,7 +99,7 @@ export function initCartPage() {
       const originalText = btn.innerText;
       btn.innerText = 'ემატება...';
 
-      await addToCart(CURRENT_CUSTOMER_ID, productId);
+      await addToCart(GLOBAL.CURRENT_CUSTOMER_ID, productId);
 
       btn.innerText = '✓ დამატებულია';
       btn.style.backgroundColor = '#2e7d32';
@@ -129,18 +127,18 @@ export function initCartPage() {
 
     try {
       if (target.classList.contains('btn-plus')) {
-        await increaseQuantity(CURRENT_CUSTOMER_ID, productId);
+        await increaseQuantity(GLOBAL.CURRENT_CUSTOMER_ID, productId);
       } 
       else if (target.classList.contains('btn-minus')) {
         const currentQty = parseInt(target.nextElementSibling.innerText);
         if (currentQty > 1) {
-          await decreaseQuantity(CURRENT_CUSTOMER_ID, productId);
+          await decreaseQuantity(GLOBAL.CURRENT_CUSTOMER_ID, productId);
         } else {
-          await removeFromCart(CURRENT_CUSTOMER_ID, productId);
+          await removeFromCart(GLOBAL.CURRENT_CUSTOMER_ID, productId);
         }
       } 
       else if (target.classList.contains('btn-remove-item')) {
-        await removeFromCart(CURRENT_CUSTOMER_ID, productId);
+        await removeFromCart(GLOBAL.CURRENT_CUSTOMER_ID, productId);
       }
       
       updateCartUI();
@@ -153,7 +151,7 @@ export function initCartPage() {
   clearCartBtn.addEventListener('click', async () => {
     if (!confirm('ნამდვილად გსურთ კალათის მთლიანად გასუფთავება?')) return;
     try {
-      await clearCart(CURRENT_CUSTOMER_ID);
+      await clearCart(GLOBAL.CURRENT_CUSTOMER_ID);
       updateCartUI();
     } catch (error) {
       alert('კალათის გასუფთავება ვერ მოხერხდა.');
@@ -163,7 +161,7 @@ export function initCartPage() {
   checkoutBtn.addEventListener('click', async () => {
     if (!confirm('ნამდვილად გსურთ შეკვეთის გაკეთება?')) return;
     try {
-      await createOrder(CURRENT_CUSTOMER_ID);
+      await createOrder(GLOBAL.CURRENT_CUSTOMER_ID);
       window.location.href = 'profile.html';
     } catch (error) {
       alert('კალათის გასუფთავება ვერ მოხერხდა.');

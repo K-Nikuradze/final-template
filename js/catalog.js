@@ -2,7 +2,6 @@ import { getAllCategories, getAllProducts, getProductsByCategory, searchProducts
 import * as GLOBAL from './config.js';
 
 export async function initCatalogPage() {
-  const R2_BASE_Path = 'https://pub-c966a90ea96443f98cb7bede2669eb6f.r2.dev/';
   const categoriesList = document.getElementById('categories-list');
   const productsGrid = document.getElementById('products-grid');
   const catalogStatus = document.getElementById('catalog-status');
@@ -109,7 +108,7 @@ export async function initCatalogPage() {
           ? product.imagePath.slice(1) 
           : product.imagePath;
         
-        imagePath = `${R2_BASE_Path}${cleanRelativePath}`;
+        imagePath = `${GLOBAL.R2_BASE_Path}${cleanRelativePath}`;
       }
 
       let stockBadge = '';
