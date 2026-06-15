@@ -13,6 +13,21 @@ export function setSaved(items) {
   localStorage.setItem('savedItems', JSON.stringify(items));
 }
 
+const getAdminHeaders = (isMultipart = false) => {
+  const token = localStorage.getItem('adminToken'); 
+  
+  const headers = {
+    'Accept': 'application/json',
+    'Authorization': `Bearer ${token}`
+  };
+  
+  if (!isMultipart) {
+    headers['Content-Type'] = 'application/json';
+  }
+  
+  return headers;
+};
+
 //CATALOG
 async function fetchDataCatalog(endpoint) {
   try {
@@ -59,7 +74,7 @@ export async function searchProducts(name) {
 }
 
 export async function createCategory(categoryData) {
-  const response = await fetch(`${CATALOG_URL}/api/Categories/Create-Category`, {
+  const response = await fetch(`${CATALOG_URL}/Categories/Create-Category`, {
     method: 'POST',
     headers: getAdminHeaders(),
     body: JSON.stringify(categoryData)
@@ -69,7 +84,7 @@ export async function createCategory(categoryData) {
 }
 
 export async function updateCategory(id, categoryData) {
-  const response = await fetch(`${CATALOG_URL}/api/Categories/Update-Category/${id}`, {
+  const response = await fetch(`${CATALOG_URL}/Categories/Update-Category/${id}`, {
     method: 'PUT',
     headers: getAdminHeaders(),
     body: JSON.stringify(categoryData)
@@ -79,7 +94,7 @@ export async function updateCategory(id, categoryData) {
 }
 
 export async function deleteCategory(id) {
-  const response = await fetch(`${CATALOG_URL}/api/Categories/Delete-Category/${id}`, {
+  const response = await fetch(`${CATALOG_URL}/Categories/Delete-Category/${id}`, {
     method: 'DELETE',
     headers: getAdminHeaders()
   });
@@ -88,7 +103,7 @@ export async function deleteCategory(id) {
 }
 
 export async function createProduct(formData) {
-  const response = await fetch(`${CATALOG_URL}/api/Products/Create-Product`, {
+  const response = await fetch(`${CATALOG_URL}/Products/Create-Product`, {
     method: 'POST',
     headers: getAdminHeaders(true),
     body: formData
@@ -97,7 +112,7 @@ export async function createProduct(formData) {
   return await response.json();
 }
 export async function updateProduct(id, productData) {
-  const response = await fetch(`${CATALOG_URL}/api/Products/Update-Product/${id}`, {
+  const response = await fetch(`${CATALOG_URL}/Products/Update-Product/${id}`, {
     method: 'PUT',
     headers: getAdminHeaders(),
     body: JSON.stringify(productData)
@@ -107,7 +122,7 @@ export async function updateProduct(id, productData) {
 }
 
 export async function deleteProduct(id) {
-  const response = await fetch(`${CATALOG_URL}/api/Products/Delete-Product/${id}`, {
+  const response = await fetch(`${CATALOG_URL}/Products/Delete-Product/${id}`, {
     method: 'DELETE',
     headers: getAdminHeaders()
   });
@@ -116,7 +131,7 @@ export async function deleteProduct(id) {
 }
 
 export async function updateProductStock(id, newStock) {
-  const response = await fetch(`${CATALOG_URL}/api/Products/Update-Product-Stock/${id}?newStock=${newStock}`, {
+  const response = await fetch(`${CATALOG_URL}/Products/Update-Product-Stock/${id}?newStock=${newStock}`, {
     method: 'PATCH',
     headers: getAdminHeaders()
   });
@@ -125,7 +140,7 @@ export async function updateProductStock(id, newStock) {
 }
 
 export async function updateProductPrice(id, newPrice) {
-  const response = await fetch(`${CATALOG_URL}/api/Products/Update-Product-Price/${id}?newPrice=${newPrice}`, {
+  const response = await fetch(`${CATALOG_URL}/Products/Update-Product-Price/${id}?newPrice=${newPrice}`, {
     method: 'PATCH',
     headers: getAdminHeaders()
   });
@@ -134,7 +149,7 @@ export async function updateProductPrice(id, newPrice) {
 }
 
 export async function updateProductImage(id, imageFormData) {
-  const response = await fetch(`${CATALOG_URL}/api/Products/Update-Product-Image/${id}`, {
+  const response = await fetch(`${CATALOG_URL}/Products/Update-Product-Image/${id}`, {
     method: 'PATCH',
     headers: getAdminHeaders(true),
     body: imageFormData
