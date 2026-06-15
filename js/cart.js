@@ -62,7 +62,7 @@ export function initCartPage() {
           const productName = productInfo.name || 'უსახელო პროდუქტი';
           const productPrice = typeof productInfo.price === 'number' ? productInfo.price : 0;
           
-          const imgPath = productInfo.imagePath 
+          const imgPath = productInfo.imagePath
               ? `${GLOBAL.R2_BASE_Path}${productInfo.imagePath.replace(/^\//, '')}` 
               : 'https://via.placeholder.com/60';
           

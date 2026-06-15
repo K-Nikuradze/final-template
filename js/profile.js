@@ -77,47 +77,51 @@ export async function initProfilePage() {
   passwordInput.addEventListener('keydown', handleDataUpdate);
   dataUpdateBtn.addEventListener('click', handleDataUpdate);
 
-  try {
-    const orders = await getOrders(GLOBAL.CURRENT_CUSTOMER_ID);
-    ordersListContainer.innerHTML = '';
+  await loadOrder();
+  
+  async function loadOrder(){
+    try {
+      const orders = await getOrders(GLOBAL.CURRENT_CUSTOMER_ID);
+      ordersListContainer.innerHTML = '';
 
-    if (!orders || orders.length === 0) {
-      ordersListContainer.innerHTML = '<p class="loading-orders">თქვენ ჯერ არ გაქვთ განხორციელებული შეკვეთა.</p>';
-      return;
+      if (!orders || orders.length === 0) {
+        ordersListContainer.innerHTML = '<p class="loading-orders">თქვენ ჯერ არ გაქვთ განხორციელებული შეკვეთა.</p>';
+        return;
+      }
+
+      orders.reverse().forEach(order => {
+        const orderDate = new Date(order.createdAt || order.orderDate || Date.now()).toLocaleDateString('ka-GE');
+        
+        let statusClass = 'status-pending';
+        let statusText = order.status || 'Completed';
+        if (statusText === 'Completed' || statusText === 'Completed') statusClass = 'status-completed';
+        if (statusText === 'Cancelled' || statusText === 'Cancelled') statusClass = 'status-cancelled';
+
+        const orderBox = document.createElement('div');
+        orderBox.className = 'order-box';
+        orderBox.innerHTML = `
+          <div class="order-header">
+            <span class="order-id">შეკვეთა #${order.id}</span>
+            <span class="order-status ${statusClass}">${statusText}</span>
+          </div>
+          <div class="order-body">
+            <div class="order-details-row">
+              <span class="order-label">თარიღი:</span>
+              <span class="order-value">${orderDate}</span>
+            </div>
+            <div class="order-details-row">
+              <span class="order-label">ჯამური თანხა:</span>
+              <span class="order-total">${(order.totalPrice || 0).toFixed(2)} ₾</span>
+            </div>
+              <button class="btn-cancel-order" data-order-id="${order.id}">შეკვეთის გაუქმება ❌</button>
+          </div>
+        `;
+        ordersListContainer.appendChild(orderBox);
+      });
+
+    } catch (error) {
+      ordersListContainer.innerHTML = '<p class="loading-orders" style="color: red;">შეკვეთების ჩატვირთვა ვერ მოხერხდა.</p>';
     }
-
-    orders.reverse().forEach(order => {
-      const orderDate = new Date(order.createdAt || order.orderDate || Date.now()).toLocaleDateString('ka-GE');
-      
-      let statusClass = 'status-pending';
-      let statusText = order.status || 'Completed';
-      if (statusText === 'Completed' || statusText === 'Completed') statusClass = 'status-completed';
-      if (statusText === 'Cancelled' || statusText === 'Cancelled') statusClass = 'status-cancelled';
-
-      const orderBox = document.createElement('div');
-      orderBox.className = 'order-box';
-      orderBox.innerHTML = `
-        <div class="order-header">
-          <span class="order-id">შეკვეთა #${order.id}</span>
-          <span class="order-status ${statusClass}">${statusText}</span>
-        </div>
-        <div class="order-body">
-          <div class="order-details-row">
-            <span class="order-label">თარიღი:</span>
-            <span class="order-value">${orderDate}</span>
-          </div>
-          <div class="order-details-row">
-            <span class="order-label">ჯამური თანხა:</span>
-            <span class="order-total">${(order.totalPrice || 0).toFixed(2)} ₾</span>
-          </div>
-            <button class="btn-cancel-order" data-order-id="${order.id}">შეკვეთის გაუქმება ❌</button>
-        </div>
-      `;
-      ordersListContainer.appendChild(orderBox);
-    });
-
-  } catch (error) {
-    ordersListContainer.innerHTML = '<p class="loading-orders" style="color: red;">შეკვეთების ჩატვირთვა ვერ მოხერხდა.</p>';
   }
 
   ordersListContainer.addEventListener('click', async (e) => {
@@ -129,7 +133,7 @@ export async function initProfilePage() {
       e.target.disabled = true;
       e.target.innerText = 'უქმდება...';
       await cancelOrder(GLOBAL.CURRENT_CUSTOMER_ID, orderId);
-      await loadOrders();
+      await loadOrder();
     } catch (error) {
       alert('შეკვეთის გაუქმება ვერ მოხერხდა.');
       e.target.disabled = false;

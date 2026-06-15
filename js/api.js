@@ -3,16 +3,6 @@ const USER_URL = 'http://user-kn-industry-webstore.duckdns.org/api';
 const CART_URL = 'http://cart-kn-industry-webstore.duckdns.org/api';
 const ORDER_URL = 'http://order-kn-industry-webstore.duckdns.org/api';
 
-// localStorage-ის დამხმარე ფუნქციები — იმპორტი გაარ სადაც ჩანაწერები გჭირდება
-export function getSaved() {
-  const raw = localStorage.getItem('savedItems');
-  return raw ? JSON.parse(raw) : [];
-}
-
-export function setSaved(items) {
-  localStorage.setItem('savedItems', JSON.stringify(items));
-}
-
 const getAdminHeaders = (isMultipart = false) => {
   const token = localStorage.getItem('adminToken'); 
   
