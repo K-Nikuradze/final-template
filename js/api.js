@@ -1,7 +1,7 @@
 const CATALOG_URL = 'https://catalog-kn-industry-webstore.duckdns.org/api';
 const USER_URL = 'http://user-kn-industry-webstore.duckdns.org/api';
-const CART_URL = 'http://cart-kn-industry-webstore.duckdns.org';
-const ORDER_URL = 'http://order-kn-industry-webstore.duckdns.org';
+const CART_URL = 'http://cart-kn-industry-webstore.duckdns.org/api';
+const ORDER_URL = 'http://order-kn-industry-webstore.duckdns.org/api';
 
 // localStorage-ის დამხმარე ფუნქციები — იმპორტი გაარ სადაც ჩანაწერები გჭირდება
 export function getSaved() {
@@ -153,12 +153,12 @@ async function fetchDataCart(endpoint) {
 }
 
 export async function getCart(customerId) {
-  return await fetchDataCart(`/api/Carts/Get-Cart/${customerId}`);
+  return await fetchDataCart(`/Carts/Get-Cart/${customerId}`);
 }
 
 export async function addToCart(customerId, productId) {
   try {
-    const response = await fetch(`${CART_URL}/api/Carts/Add-To-Cart/${customerId}`, {
+    const response = await fetch(`${CART_URL}/Carts/Add-To-Cart/${customerId}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -176,7 +176,7 @@ export async function addToCart(customerId, productId) {
 
 export async function removeFromCart(customerId, productId) {
   try {
-    const response = await fetch(`${CART_URL}/api/Carts/Remove-From-Cart/${customerId}/items/${productId}`, {
+    const response = await fetch(`${CART_URL}/Carts/Remove-From-Cart/${customerId}/items/${productId}`, {
       method: 'DELETE',
       headers: { 'Accept': 'application/json' }
     });
@@ -190,7 +190,7 @@ export async function removeFromCart(customerId, productId) {
 
 export async function increaseQuantity(customerId, productId, quantity = 1) {
   try {
-    const response = await fetch(`${CART_URL}/api/Carts/Increase-Quantity/${customerId}/items/${productId}?quantity=${quantity}`, {
+    const response = await fetch(`${CART_URL}/Carts/Increase-Quantity/${customerId}/items/${productId}?quantity=${quantity}`, {
       method: 'PATCH',
       headers: { 'Accept': 'application/json' }
     });
@@ -206,7 +206,7 @@ export async function increaseQuantity(customerId, productId, quantity = 1) {
 
 export async function decreaseQuantity(customerId, productId, quantity = 1) {
   try {
-    const response = await fetch(`${CART_URL}/api/Carts/Decrease-Quantity/${customerId}/items/${productId}?quantity=${quantity}`, {
+    const response = await fetch(`${CART_URL}/Carts/Decrease-Quantity/${customerId}/items/${productId}?quantity=${quantity}`, {
       method: 'PATCH',
       headers: { 'Accept': 'application/json' }
     });
@@ -222,7 +222,7 @@ export async function decreaseQuantity(customerId, productId, quantity = 1) {
 
 export async function clearCart(customerId) {
   try {
-    const response = await fetch(`${CART_URL}/api/Carts/Clear-Cart/${customerId}/items`, {
+    const response = await fetch(`${CART_URL}/Carts/Clear-Cart/${customerId}/items`, {
       method: 'DELETE',
       headers: { 'Accept': 'application/json' }
     });
@@ -234,13 +234,13 @@ export async function clearCart(customerId) {
 }
 
 export async function getCartTotal(customerId) {
-  return await fetchDataCart(`/api/Carts/Get-Total/${customerId}`);
+  return await fetchDataCart(`/Carts/Get-Total/${customerId}`);
 }
 
 //ORDERS
 export async function createOrder(customerId) {
   try {
-    const response = await fetch(`${ORDER_URL}/api/Orders/Create-Order/${customerId}`, {
+    const response = await fetch(`${ORDER_URL}/Orders/Create-Order/${customerId}`, {
       method: 'POST',
       headers: { 'Accept': 'application/json' }
     });
@@ -255,7 +255,7 @@ export async function createOrder(customerId) {
 
 export async function getOrders(customerId) {
   try {
-    const response = await fetch(`${ORDER_URL}/api/Orders/Get-Orders/${customerId}`, {
+    const response = await fetch(`${ORDER_URL}/Orders/Get-Orders/${customerId}`, {
       method: 'GET',
       headers: { 'Accept': 'application/json' }
     });
@@ -269,13 +269,59 @@ export async function getOrders(customerId) {
 
 export async function cancelOrder(customerId, orderId) {
   try {
-    const response = await fetch(`${ORDER_URL}/api/Orders/Cancel-Order/${customerId}/${orderId}`, {
+    const response = await fetch(`${ORDER_URL}/Orders/Cancel-Order/${customerId}/${orderId}`, {
       method: 'POST',
       headers: { 'Accept': 'application/json' }
     });
     if (!response.ok) throw new Error('შეკვეთის გაუქმება ვერ მოხერხდა');
     const responseText = await response.text();
     return responseText ? JSON.parse(responseText) : true;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
+
+//ADMIN
+export async function adminLoginCheck(username, password) {
+  try {
+    const response = await fetch(`${USER_URL}/Auth/Admin-Login`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify({ username, password })
+    });
+
+    if (!response.ok) throw new Error('ადმინისტრატორის მონაცემები არასწორია');
+    return await response.json();
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
+
+export async function getJwtToken(username, password) {
+  try {
+    const response = await fetch(`${USER_URL}/Auth/login`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify({ username, password })
+    });
+
+    if (!response.ok) throw new Error('ტოკენის მიღება ვერ მოხერხდა');
+    
+    const responseText = await response.text();
+    try {
+      const data = JSON.parse(responseText);
+      return data.token || data;
+    } catch {
+      return responseText;
+    }
   } catch (error) {
     console.error(error);
     throw error;
