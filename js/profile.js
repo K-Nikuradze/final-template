@@ -1,26 +1,21 @@
 import { getOrders, cancelOrder, changeUsername, changePassword } from './api.js';
+import * as GLOBAL from './config.js';
 
-const CURRENT_CUSTOMER_ID = localStorage.getItem('userId');
+export async function initProfilePage() {
+  const CURRENT_CUSTOMER_ID = localStorage.getItem('userId');
 
-const usernameInput = document.getElementById('profile-username');
-const emailInput = document.getElementById('profile-email');
-const passwordInput = document.getElementById('profile-password');
-const ordersListContainer = document.getElementById('orders-list-container');
-const signingBtn = document.getElementById('log-in-out');
-const dataUpdateBtn = document.getElementById('data-update');
-const oldPasswordInput = document.getElementById('profile-old-password');
+  const usernameInput = document.getElementById('profile-username');
+  const emailInput = document.getElementById('profile-email');
+  const passwordInput = document.getElementById('profile-password');
+  const ordersListContainer = document.getElementById('orders-list-container');
+  const signingBtn = document.getElementById('log-in-out');
+  const dataUpdateBtn = document.getElementById('data-update');
+  const oldPasswordInput = document.getElementById('profile-old-password');
 
-const isAuthorized = document.cookie.split('; ').some(row => row.startsWith('authorized=true'));
+  if (!GLOBAL.isAuthorized) {
+    window.location.href = 'login.html';
+  }
 
-if (!isAuthorized) {
-  window.location.href = 'login.html';
-}
-
-if (isAuthorized) {
-  signingBtn.innerText = "გამოსვლა";
-}
-
-function loadInitialUserData() {
   const currentUsername = localStorage.getItem('user');
   const currentEmail = localStorage.getItem('userEmail');
 
@@ -30,62 +25,60 @@ function loadInitialUserData() {
   if (currentEmail) {
     emailInput.value = currentEmail;
   }
-}
 
-async function handleDataUpdate(e) {
-  if (e.key === 'Enter' || e.type === 'click') {
-    e.preventDefault(); 
+  async function handleDataUpdate(e) {
+    if (e.key === 'Enter' || e.type === 'click') {
+      e.preventDefault(); 
 
-    const currentUsername = localStorage.getItem('user');
-    const newUsername = usernameInput.value.trim();
-    const oldPassword = oldPasswordInput.value;
-    const newPassword = passwordInput.value;
+      const currentUsername = localStorage.getItem('user');
+      const newUsername = usernameInput.value.trim();
+      const oldPassword = oldPasswordInput.value;
+      const newPassword = passwordInput.value;
 
-    if (!newUsername) {
-      alert('მომხმარებლის სახელი არ შეიძლება იყოს ცარიელი!');
-      return;
-    }
-
-    try {
-      let isUsernameChanged = false;
-      let isPasswordChanged = false;
-
-      if (newUsername !== currentUsername) {
-        await changeUsername(CURRENT_CUSTOMER_ID, newUsername);
-        localStorage.setItem('user', newUsername);
-        isUsernameChanged = true;
+      if (!newUsername) {
+        alert('მომხმარებლის სახელი არ შეიძლება იყოს ცარიელი!');
+        return;
       }
 
-      if (newPassword) {
-        if (!oldPassword) {
-          alert('პაროლის შესაცვლელად აუცილებელია მიმდინარე (ძველი) პაროლის მითითება!');
-          return;
+      try {
+        let isUsernameChanged = false;
+        let isPasswordChanged = false;
+
+        if (newUsername !== currentUsername) {
+          await changeUsername(CURRENT_CUSTOMER_ID, newUsername);
+          localStorage.setItem('user', newUsername);
+          isUsernameChanged = true;
         }
-        
-        await changePassword(CURRENT_CUSTOMER_ID, oldPassword, newPassword);
-        oldPasswordInput.value = '';
-        passwordInput.value = '';
-        isPasswordChanged = true;
-      }
 
-      if (isUsernameChanged || isPasswordChanged) {
-        alert('მონაცემები წარმატებით განახლდა სერვერზე! ✨');
-      } else {
-        alert('ცვლილებები არ დაფიქსირებულა.');
-      }
+        if (newPassword) {
+          if (!oldPassword) {
+            alert('პაროლის შესაცვლელად აუცილებელია მიმდინარე (ძველი) პაროლის მითითება!');
+            return;
+          }
+          
+          await changePassword(CURRENT_CUSTOMER_ID, oldPassword, newPassword);
+          oldPasswordInput.value = '';
+          passwordInput.value = '';
+          isPasswordChanged = true;
+        }
 
-    } catch (error) {
-      alert(error.message || 'მონაცემების განახლებისას მოხდა შეცდომა.');
+        if (isUsernameChanged || isPasswordChanged) {
+          alert('მონაცემები წარმატებით განახლდა სერვერზე! ✨');
+        } else {
+          alert('ცვლილებები არ დაფიქსირებულა.');
+        }
+
+      } catch (error) {
+        alert(error.message || 'მონაცემების განახლებისას მოხდა შეცდომა.');
+      }
     }
   }
-}
 
-usernameInput.addEventListener('keydown', handleDataUpdate);
-oldPasswordInput.addEventListener('keydown', handleDataUpdate);
-passwordInput.addEventListener('keydown', handleDataUpdate);
-dataUpdateBtn.addEventListener('click', handleDataUpdate);
+  usernameInput.addEventListener('keydown', handleDataUpdate);
+  oldPasswordInput.addEventListener('keydown', handleDataUpdate);
+  passwordInput.addEventListener('keydown', handleDataUpdate);
+  dataUpdateBtn.addEventListener('click', handleDataUpdate);
 
-async function loadOrders() {
   try {
     const orders = await getOrders(CURRENT_CUSTOMER_ID);
     ordersListContainer.innerHTML = '';
@@ -128,26 +121,21 @@ async function loadOrders() {
   } catch (error) {
     ordersListContainer.innerHTML = '<p class="loading-orders" style="color: red;">შეკვეთების ჩატვირთვა ვერ მოხერხდა.</p>';
   }
+
+  ordersListContainer.addEventListener('click', async (e) => {
+    if (!e.target.classList.contains('btn-cancel-order')) return;
+    const orderId = e.target.getAttribute('data-order-id');
+    if (!confirm(`ნამდვილად გსურთ შეკვეთის #${orderId} გაუქმება?`)) return;
+
+    try {
+      e.target.disabled = true;
+      e.target.innerText = 'უქმდება...';
+      await cancelOrder(CURRENT_CUSTOMER_ID, orderId);
+      await loadOrders();
+    } catch (error) {
+      alert('შეკვეთის გაუქმება ვერ მოხერხდა.');
+      e.target.disabled = false;
+      e.target.innerText = 'შეკვეთის გაუქმება ❌';
+    }
+  });
 }
-
-ordersListContainer.addEventListener('click', async (e) => {
-  if (!e.target.classList.contains('btn-cancel-order')) return;
-  const orderId = e.target.getAttribute('data-order-id');
-  if (!confirm(`ნამდვილად გსურთ შეკვეთის #${orderId} გაუქმება?`)) return;
-
-  try {
-    e.target.disabled = true;
-    e.target.innerText = 'უქმდება...';
-    await cancelOrder(CURRENT_CUSTOMER_ID, orderId);
-    await loadOrders();
-  } catch (error) {
-    alert('შეკვეთის გაუქმება ვერ მოხერხდა.');
-    e.target.disabled = false;
-    e.target.innerText = 'შეკვეთის გაუქმება ❌';
-  }
-});
-
-document.addEventListener('DOMContentLoaded', () => {
-  loadInitialUserData();
-  loadOrders();
-});

@@ -1,0 +1,1 @@
+export const isAuthorized = document.cookie.split('; ').some(row => row.startsWith('authorized=true'));

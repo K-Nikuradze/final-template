@@ -1,100 +1,102 @@
 import { CustomerAuth } from './api.js';
 
-if (localStorage.getItem('user')) {
-  localStorage.removeItem('user');
-  localStorage.removeItem('userId');
-  localStorage.removeItem('userEmail');
-  document.cookie = 'authorized=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/';
-  window.location.href = 'login.html';
-}
-
-document.getElementById('login-form').addEventListener('submit', async (e) => {
-
-  e.preventDefault();
-
-  const nameInput = document.getElementById('name-input');
-  const passwordInput = document.getElementById('password-input'); 
-  
-  const nameValue = nameInput.value.trim();
-  const passwordValue = passwordInput ? passwordInput.value.trim() : '';
-  
-  const errorEl = document.getElementById('login-error');
-  const submitBtn = e.target.querySelector('button[type="submit"]');
-
-  if (!nameValue) {
-    showFeedback('გთხოვთ შეიყვანოთ სახელი.', 'error');
-    nameInput.focus();
-    return;
+export function initLoginPage() {
+  if (localStorage.getItem('user')) {
+    localStorage.removeItem('user');
+    localStorage.removeItem('userId');
+    localStorage.removeItem('userEmail');
+    document.cookie = 'authorized=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/';
+    window.location.href = 'login.html';
   }
 
-  if (passwordInput && !passwordValue) {
-    showFeedback('გთხოვთ შეიყვანოთ პაროლი.', 'error');
-    passwordInput.focus();
-    return;
-  }
+  document.getElementById('login-form').addEventListener('submit', async (e) => {
 
-  clearFeedback();
+    e.preventDefault();
 
-  try {
-    submitBtn.disabled = true;
-    submitBtn.textContent = 'მიმდინარეობს ავტორიზაცია...';
+    const nameInput = document.getElementById('name-input');
+    const passwordInput = document.getElementById('password-input'); 
+    
+    const nameValue = nameInput.value.trim();
+    const passwordValue = passwordInput ? passwordInput.value.trim() : '';
+    
+    const errorEl = document.getElementById('login-error');
+    const submitBtn = e.target.querySelector('button[type="submit"]');
 
-    const loginData = {
-      username: nameValue,
-      password: passwordValue 
-    };
-
-    const response = await CustomerAuth(loginData);
-
-    if (!response.ok) {
-      if (response.status === 401 || response.status === 400) {
-        throw new Error('სახელი ან პაროლი არასწორია.');
-      }
-      throw new Error('სერვერზე დაფიქსირდა შეცდომა.');
+    if (!nameValue) {
+      showFeedback('გთხოვთ შეიყვანოთ სახელი.', 'error');
+      nameInput.focus();
+      return;
     }
 
-    const customerData = await response.json();
+    if (passwordInput && !passwordValue) {
+      showFeedback('გთხოვთ შეიყვანოთ პაროლი.', 'error');
+      passwordInput.focus();
+      return;
+    }
 
-    showFeedback('ავტორიზაცია წარმატებულია! გადამისამართება...', 'success');
-    
-    localStorage.setItem('user', customerData.username);
-    localStorage.setItem('userId', customerData.id);
-    localStorage.setItem('userEmail', customerData.email);
-    
-    document.cookie = 'authorized=true; path=/';
+    clearFeedback();
 
-    setTimeout(() => {
-      window.location.href = 'index.html';
-    }, 1200);
+    try {
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'მიმდინარეობს ავტორიზაცია...';
 
-  } catch (error) {
-    console.error('Login Error:', error);
-    showFeedback(error.message || 'სერვერთან კავშირი ვერ დამყარდა.', 'error');
-    
-    submitBtn.disabled = false;
-    submitBtn.textContent = 'დაწყება →';
+      const loginData = {
+        username: nameValue,
+        password: passwordValue 
+      };
+
+      const response = await CustomerAuth(loginData);
+
+      if (!response.ok) {
+        if (response.status === 401 || response.status === 400) {
+          throw new Error('სახელი ან პაროლი არასწორია.');
+        }
+        throw new Error('სერვერზე დაფიქსირდა შეცდომა.');
+      }
+
+      const customerData = await response.json();
+
+      showFeedback('ავტორიზაცია წარმატებულია! გადამისამართება...', 'success');
+      
+      localStorage.setItem('user', customerData.username);
+      localStorage.setItem('userId', customerData.id);
+      localStorage.setItem('userEmail', customerData.email);
+      
+      document.cookie = 'authorized=true; path=/';
+
+      setTimeout(() => {
+        window.location.href = 'index.html';
+      }, 1200);
+
+    } catch (error) {
+      console.error('Login Error:', error);
+      showFeedback(error.message || 'სერვერთან კავშირი ვერ დამყარდა.', 'error');
+      
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'დაწყება →';
+    }
+  });
+
+  function showFeedback(message, type) {
+    const errorEl = document.getElementById('login-error');
+    errorEl.textContent = message;
+    errorEl.hidden = false;
+
+    if (type === 'success') {
+      errorEl.style.backgroundColor = 'var(--white)';
+      errorEl.style.color = 'var(--burgundy-main)';
+      errorEl.style.borderColor = 'var(--primary-color)';
+      errorEl.style.borderLeft = '4px solid var(--primary-color)';
+    } else if (type === 'error') {
+      errorEl.style.backgroundColor = 'var(--burgundy-dark)';
+      errorEl.style.color = 'var(--white)';
+      errorEl.style.borderLeft = '4px solid var(--primary-color)';
+    }
   }
-});
 
-function showFeedback(message, type) {
-  const errorEl = document.getElementById('login-error');
-  errorEl.textContent = message;
-  errorEl.hidden = false;
-
-  if (type === 'success') {
-    errorEl.style.backgroundColor = 'var(--white)';
-    errorEl.style.color = 'var(--burgundy-main)';
-    errorEl.style.borderColor = 'var(--primary-color)';
-    errorEl.style.borderLeft = '4px solid var(--primary-color)';
-  } else if (type === 'error') {
-    errorEl.style.backgroundColor = 'var(--burgundy-dark)';
-    errorEl.style.color = 'var(--white)';
-    errorEl.style.borderLeft = '4px solid var(--primary-color)';
+  function clearFeedback() {
+    const errorEl = document.getElementById('login-error');
+    errorEl.hidden = true;
+    errorEl.textContent = '';
   }
-}
-
-function clearFeedback() {
-  const errorEl = document.getElementById('login-error');
-  errorEl.hidden = true;
-  errorEl.textContent = '';
 }
