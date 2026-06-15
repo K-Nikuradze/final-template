@@ -152,7 +152,7 @@
   opacity: 1;
 }
 
-@media (max-width: 480px) {
+@media (max-width: 600px) {
   .login-main {
     overflow-y: auto;
   }
@@ -165,7 +165,6 @@
 }
 
 @media (min-width: 1024px) {
-  /* დესქტოპი */
   .login-card {
     padding: 3.5rem;
     max-width: 460px;

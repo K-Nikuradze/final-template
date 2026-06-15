@@ -268,7 +268,6 @@ body {
   text-align: center;
 }
 
-/* მოქმედების ღილაკები ცხრილში */
 .actions-cell {
   display: flex;
   gap: 0.5rem;

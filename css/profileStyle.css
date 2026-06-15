@@ -34,22 +34,37 @@ body {
 
 .navbar {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  flex-direction: column;
+  gap: 1.5rem;
   padding: 1.5rem var(--container-padding);
   background-color: var(--burgundy-dark);
 }
 
-.logo {
-  font-size: 1.5rem;
+.logo-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+}
+
+.navbar-logo {
+  height: 40px;
+  width: auto;
+  object-fit: contain;
+}
+
+.logo-text {
+  font-size: 1.2rem;
   font-weight: bold;
-  letter-spacing: 2px;
+  color: var(--white);
 }
 
 .navbar ul {
   display: flex;
   list-style: none;
-  gap: 2rem;
+  gap: 1rem; 
+  flex-wrap: wrap;
+  justify-content: center;
   align-items: center;
 }
 
@@ -90,22 +105,21 @@ body {
 
 main {
   min-height: calc(100vh - 80px - 300px);
-  padding: 3rem var(--container-padding);
+  padding: 1.5rem var(--container-padding);
 }
 
 .profile-container {
   display: grid;
-  grid-template-columns: 350px 1fr;
-  gap: 2.5rem;
-  max-width: 1200px;
-  margin: 0 auto;
+  grid-template-columns: 1fr; 
+  gap: 2rem;
+  width: 100%;
 }
 
 .profile-card {
   background-color: var(--white);
   border: 1px solid #e1e1e1;
   border-radius: var(--border-radius);
-  padding: 2rem;
+  padding: 1.5rem;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
 }
 
@@ -198,11 +212,12 @@ main {
 
 .order-header {
   background-color: var(--light-bg);
-  padding: 1rem 1.5rem;
+  padding: 1rem;
   border-bottom: 1px solid #e1e1e1;
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  flex-direction: column; 
+  align-items: flex-start;
+  gap: 0.5rem;
   font-weight: 600;
 }
 
@@ -222,7 +237,7 @@ main {
 .status-cancelled { background-color: #f8d7da; color: #721c24; }
 
 .order-body {
-  padding: 1.5rem;
+  padding: 1rem;
 }
 
 .order-details-row {
@@ -274,14 +289,14 @@ main {
   color: var(--white);
   padding: 3rem var(--container-padding) 1rem;
   margin-top: auto;
+  text-align: center;
 }
 
 .footer-container {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 2rem;
-  max-width: 1200px;
-  margin: 0 auto 2rem auto;
+  grid-template-columns: 1fr; 
+  gap: 1.5rem;
+  width: 100%;
 }
 
 .footer-section h3, .footer-section h4 {
@@ -321,65 +336,55 @@ main {
   color: var(--white);
 }
 
-@media (max-width: 768px) {
-  .profile-container {
-    grid-template-columns: 1fr;
-    gap: 2rem;
-  }
-}
-
-@media (max-width: 600px) {
+@media (min-width: 600px) {
   .navbar {
-    flex-direction: column;
-    gap: 1.5rem;
-    padding: 1.5rem var(--container-padding);
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0;
+    padding: 1rem var(--container-padding);
   }
 
   .navbar ul {
-    gap: 1rem; 
-    flex-wrap: wrap; 
-    justify-content: center;
-  }
-
-  main {
-    padding: 1.5rem var(--container-padding);
-  }
-
-  .profile-card {
-    padding: 1.5rem;
+    gap: 2rem;
+    flex-wrap: nowrap;
   }
 
   .order-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.5rem;
-    padding: 1rem;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.5rem;
   }
 
   .order-body {
-    padding: 1rem;
-  }
-
-  .site-footer {
-    text-align: center; 
+    padding: 1.5rem;
   }
 
   .footer-container {
-    grid-template-columns: 1fr;
-    gap: 1.5rem;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+  }
+
+  .site-footer {
+    text-align: left;
   }
 }
 
 @media (min-width: 1024px) {
-  .navbar {
-    margin: 0;
-    width: 100%;
+  main {
+    padding: 3rem var(--container-padding);
   }
 
   .profile-container {
+    grid-template-columns: 350px 1fr; 
     max-width: 1200px;
     margin: 0 auto;
     gap: 3rem;
+  }
+
+  .profile-card {
+    padding: 2rem;
   }
 
   .footer-container {
