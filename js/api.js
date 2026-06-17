@@ -1,7 +1,7 @@
 const CATALOG_URL = 'https://catalog-kn-industry-webstore.duckdns.org/api';
-const USER_URL = 'http://user-kn-industry-webstore.duckdns.org/api';
-const CART_URL = 'http://cart-kn-industry-webstore.duckdns.org/api';
-const ORDER_URL = 'http://order-kn-industry-webstore.duckdns.org/api';
+const USER_URL = 'https://user-kn-industry-webstore.duckdns.org/api';
+const CART_URL = 'https://cart-kn-industry-webstore.duckdns.org/api';
+const ORDER_URL = 'https://order-kn-industry-webstore.duckdns.org/api';
 
 const getAdminHeaders = (isMultipart = false) => {
   const token = localStorage.getItem('adminToken'); 
