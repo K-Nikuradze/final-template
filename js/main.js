@@ -9,17 +9,17 @@ document.addEventListener('DOMContentLoaded', () => {
   const path = window.location.pathname.toLowerCase();
   handleGlobalFeatures();
 
-  if (path.includes('catalog.html')) {
+  if (path.includes('catalog')) {
     initCartPage();
     initCatalogPage();
   }
-  else if (path.includes('login.html')) {
+  else if (path.includes('login')) {
     initLoginPage();
   }
-  else if (path.includes('register.html')) {
+  else if (path.includes('register')) {
     initRegisterPage();
   }
-  else if (path.includes('profile.html')) {
+  else if (path.includes('profile')) {
     initProfilePage();
   }
 });
